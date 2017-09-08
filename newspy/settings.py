@@ -89,6 +89,9 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+DEPTH_LIMIT = 3
+DOWNLOAD_DELAY = 1
+
 MONGODB_HOST = 'aws-eu-west-1-portal.8.dblayer.com'
 MONGODB_PORT = 17162
 MONGODB_USER = 'newspy'

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from pymongo import MongoClient
+from pymongo.errors import OperationFailure
 from scrapy.conf import settings
 import ssl
+import logging
 
 
 class NewspyPipeline(object):
@@ -21,9 +23,9 @@ class MongoDBPipeline(object):
         self.collection = db[settings['MONGODB_COLLECTION']]
 
     def process_item(self, item, spider):
-        if item['text'] is not None:
-            self.collection.insert(dict(item))
-            print("Item wrote to MongoDB database %s/%s" %
-                   (settings['MONGODB_DB'], settings['MONGODB_COLLECTION'])
-            )
+        if item['url'] is not None and item['text'] is not None:
+            try:
+                self.collection.update_one({'url': item['url']}, {'$set': dict(item)}, upsert=True)
+            except OperationFailure as e:
+                logging.log(logging.ERROR, 'Failed to save to MongoDB: ' + e.details)
         return item
