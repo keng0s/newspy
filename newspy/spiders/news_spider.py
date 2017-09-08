@@ -46,7 +46,6 @@ class NewsSpider(CrawlSpider):
             item['author'] = response.xpath("//meta[@property='article:author']/@content").extract_first()
             item['section'] = response.xpath("//meta[@property='article:section']/@content").extract_first()
             item['keywords'] = response.xpath("//meta[@name='keywords']/@content").extract_first()
-            item['source'] = response.xpath("//meta[@property='og:site_name']/@content").extract_first()
 
             text_contents = response.xpath("//div[@itemprop='articleBody' or @property='articleBody']/p").extract()
             item['text'] = re.sub(r'<.*?>', '', ''.join(text_contents)).strip() if text_contents else None

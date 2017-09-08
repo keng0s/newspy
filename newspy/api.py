@@ -23,22 +23,23 @@ def get_news(keyword):
     collection = db[settings['MONGODB_COLLECTION']]
     collection.create_index([('text', 'text')])
     results = []
-    try:
-        for item in collection.find({"$text": {"$search": keyword}}):
-            results.append({
-                'url': item['url'],
-                'title': item['title'],
-                'description': item['description'],
-                'section': item['section'],
-                'text': item['text'],
-                'author': item['author'],
-                'keywords': item['keywords']
-            })
-    except OperationFailure as e:
-        logging.log(logging.ERROR, 'Failed read from MongoDB: ' + e.details)
+    if keyword is not None:
+        try:
+            for item in collection.find({"$text": {"$search": keyword}}):
+                results.append({
+                    'url': item['url'],
+                    'title': item['title'],
+                    'description': item['description'],
+                    'section': item['section'],
+                    'text': item['text'],
+                    'author': item['author'],
+                    'keywords': item['keywords']
+                })
+        except OperationFailure as e:
+            logging.log(logging.ERROR, 'Failed read from MongoDB: ' + e.details)
     response = jsonify(results)
     return response
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
