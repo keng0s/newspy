@@ -22,14 +22,14 @@ class NewsSpider(CrawlSpider):
     def __init__(self, filename=None, url=None):
         super(NewsSpider, self).__init__()
 
-        # Either URL of file with URLs has to be provided
+        # Either URL or a file with URLs has to be provided
         if filename:
             with open(filename, 'r') as f:
                 self.start_urls = [url.strip() for url in f.readlines()]
             self.allowed_domains = [urlparse(url).hostname.lstrip('www.') for url in self.start_urls]
         elif url:
             if not url.startswith('http://') and not url.startswith('https://'):
-                url = 'http://%s/' % url
+                url = 'http://{}/'.format(url)
             self.start_urls = [url]
             self.allowed_domains = [urlparse(url).hostname.lstrip('www.')]
 
@@ -48,6 +48,6 @@ class NewsSpider(CrawlSpider):
             item['keywords'] = response.xpath("//meta[@name='keywords']/@content").extract_first()
 
             text_contents = response.xpath("//div[@itemprop='articleBody' or @property='articleBody']/p").extract()
-            item['text'] = re.sub(r'<.*?>', '', ''.join(text_contents)).strip() if text_contents else None
+            item['text'] = re.sub(r'<.*?>', '', ' '.join(text_contents)).strip() if text_contents else None
 
             return item
